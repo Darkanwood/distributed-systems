@@ -1,20 +1,18 @@
-import java.rmi.server.ObjID;
+package Uebung01;
 
 public class uebung01_02b {
 
     private static int c = 0;
-    private static Objekt LOCK = new Object();
+    private static Object LOCK = new Object();
 
     public static void increment() {
-        
-        synchronized(LOCK){
         int b = c;
-        }
 
+        synchronized(LOCK){
             b = b + 1;
             c = b;
-        
-        
+        }
+  
     }
 
     public synchronized void decrement() {
