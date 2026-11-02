@@ -1,5 +1,7 @@
+
 import java.io.*;
 import java.net.*;
+import java.nio.charset.StandardCharsets;
 
 // KnockKnock Server
 
@@ -12,65 +14,124 @@ public class uebung02_02a {
 
             while (true) {
 
-                // Waits until a client starts up and requests a connection on the
-                // host and port of this server
+                // Wait for client connection
                 Socket clientSocket = serverSocket.accept();
 
-                // Create a new conektion betwen server and a new socket
+                // Create new thread
                 Thread socketThread = new Thread(() -> {
 
                     System.out.println("Worker gestartet: " + Thread.currentThread().getName());
 
-                    // try-with-resources statement
                     try (
                             Socket socket = clientSocket;
-
-                            PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
-                            BufferedReader in = new BufferedReader(
-                                    new InputStreamReader(socket.getInputStream()));) {
-
-                        String inputLine;
-                        String outputLine;
-                        String requestLine;
+                            BufferedReader in = new BufferedReader(new InputStreamReader(
+                                            socket.getInputStream(),StandardCharsets.ISO_8859_1));
+                                            
+                            OutputStream out = socket.getOutputStream()
+                        ) {
 
                         // Read HTTP Request
-                        requestLine = in.readLine();
+                        String requestLine = in.readLine();
+
+                        if (requestLine == null) {
+                            return;
+                        }
+
                         System.out.println("Request: " + requestLine);
 
-                        // Read Header
-                        while ((inputLine = in.readLine()) != null) {
+                        // Read HTTP Headers
+                        String inputLine;
 
-                            // Break if empty Space
-                            if (inputLine.isEmpty()) {
-                                break;
+                        while ((inputLine = in.readLine()) != null
+                                && !inputLine.isEmpty()) {
+                            // Read until empty line
+                        }
+
+                        // Split Request
+                        String[] request = requestLine.split(" ");
+
+                        if (request.length != 3) {
+                            out.write(("HTTP/1.1 400 Bad Request\r\n"
+                                    + "Content-Length: 0\r\n"
+                                    + "Connection: close\r\n\r\n")
+                                    .getBytes(StandardCharsets.US_ASCII));
+                            return;
+                        }
+
+                        String method = request[0];
+                        String path = request[1];
+
+                        // Check HTTP Method
+                        if (!method.equals("GET")) {
+                            out.write(("HTTP/1.1 405 Method Not Allowed\r\n"
+                                    + "Allow: GET\r\n"
+                                    + "Content-Length: 0\r\n"
+                                    + "Connection: close\r\n\r\n")
+                                    .getBytes(StandardCharsets.US_ASCII));
+                            return;
+                        }
+
+                        // Only serve index.html for now
+                        if (!path.equals("/index.html")
+                                && !path.equals("/")) {
+
+                            out.write(("HTTP/1.1 404 Not Found\r\n"
+                                    + "Content-Length: 0\r\n"
+                                    + "Connection: close\r\n\r\n")
+                                    .getBytes(StandardCharsets.US_ASCII));
+                            return;
+                        }
+
+                        // Open local file
+                        File file = new File("index.html");
+
+                        if (!file.isFile()) {
+                            out.write(("HTTP/1.1 404 Not Found\r\n"
+                                    + "Content-Length: 0\r\n"
+                                    + "Connection: close\r\n\r\n")
+                                    .getBytes(StandardCharsets.US_ASCII));
+                            return;
+                        }
+
+                        // Create HTTP Response
+                        String responseHeader = "HTTP/1.1 200 OK\r\n"
+                                + "Content-Type: text/html; charset=utf-8\r\n"
+                                + "Content-Length: " + file.length() + "\r\n"
+                                + "Connection: close\r\n"
+                                + "\r\n";
+
+                        out.write(responseHeader.getBytes(
+                                StandardCharsets.US_ASCII));
+
+                        // Send file using byte stream
+                        try (FileInputStream fileInput = new FileInputStream(file)) {
+
+                            byte[] buffer = new byte[4096];
+                            int bytesRead;
+
+                            while ((bytesRead = fileInput.read(buffer)) != -1) {
+                                out.write(buffer, 0, bytesRead);
                             }
                         }
 
-                        // Kreate HTTP-Response
-                        outputLine = "HTTP/1.1 200 OK\r\n"
-                                + "Content-Type: text/plain\r\n"
-                                + "Content-Length: 25\r\n"
-                                + "Connection: close\r\n"
-                                + "\r\n"
-                                + "Praised be the Omnissiah!";
-
-                        // Send HTTP Response
-                        out.print(outputLine);
                         out.flush();
+
+                        System.out.println("Datei uebertragen: "
+                                + file.getName());
 
                     } catch (IOException e) {
                         System.err.println(
                                 "Client error: " + e.getMessage());
-
                     }
 
                 });
 
                 socketThread.start();
             }
-        } catch (IOException e) {
-            System.err.println("Could not listen on port " + portNumber);
-        }
 
+        } catch (IOException e) {
+            System.err.println(
+                    "Could not listen on port " + portNumber);
+        }
     }
 }
