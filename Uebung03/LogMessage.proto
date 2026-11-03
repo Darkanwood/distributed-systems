@@ -1,0 +1,20 @@
+syntax = "proto2";
+
+
+enum SeverityLevel{
+    UNKNOWN = 0;
+    DEBUG = 1;
+    INFO = 2;
+    WARN = 3;
+    ERROR = 4;
+    FATAL = 5;
+}
+
+message writeLogRepport{
+    optional uint32 time = 1;
+    optional string who = 2;
+    optional string where = 3;
+    optional SeverityLevel severityLevel = 4 [default = UNKNOWN];
+    optional string message = 5;
+}
+

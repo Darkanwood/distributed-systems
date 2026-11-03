@@ -1,0 +1,6 @@
+[TIME]: 16:09:17[WHO]: USER: lordblackwood[WHERE]: Host: 127.0.0.1[SEVERITY]: DEBUG[MESSAGE]: MESSAGE: LogIn
+[TIME]: 16:10:00[WHO]: USER: lordblackwood[WHERE]: Host: 127.0.0.1[SEVERITY]: INFO[MESSAGE]: MESSAGE: Praised be the Omnissiah!
+[TIME]: 16:10:00[WHO]: USER: lordblackwood[WHERE]: Host: 127.0.0.1[SEVERITY]: DEBUG[MESSAGE]: MESSAGE: LogOut
+[TIME]: 16:12:08[WHO]: USER: lordblackwood[WHERE]: Host: 127.0.0.1[SEVERITY]: DEBUG[MESSAGE]: MESSAGE: LogIn
+[TIME]: 16:12:15[WHO]: USER: lordblackwood[WHERE]: Host: 127.0.0.1[SEVERITY]: INFO[MESSAGE]: MESSAGE: HalloWelt
+[TIME]: 16:12:15[WHO]: USER: lordblackwood[WHERE]: Host: 127.0.0.1[SEVERITY]: DEBUG[MESSAGE]: MESSAGE: LogOut

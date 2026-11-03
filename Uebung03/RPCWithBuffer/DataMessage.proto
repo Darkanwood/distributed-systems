@@ -1,0 +1,14 @@
+syntax = "proto2";
+
+option java_package = "RPCWithBuffer";
+
+
+message Data{
+    optional uint32 index = 1;
+    optional string city = 2;
+}
+
+message Funktion{
+    optional string function = 3;
+    optional uint32 index = 4;
+}
