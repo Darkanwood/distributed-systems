@@ -1,0 +1,31 @@
+syntax = "proto3";
+
+option java_package = "io.grpc.examples.routeguide";
+option java_multiple_files = true;
+option java_outer_classname = "RouteGuideProto";
+option objc_class_prefix = "RTG";
+
+
+service DataFunction{
+    //Gibt die Stadt anhand dem übergebenden Index aus
+    rpc getRecord(ComData) returns (ComData) {}
+
+    //Fügt einen neuen Datensatz (Index/Stadt) in die Datenbank ein
+    rpc addRecord(ComData) returns (ComData) {}
+
+    //Gibt die Größe der Datenbank(Zeilen) aus
+    rpc getSize(ComData) returns (ComData) {}
+
+    //Löscht alle Einträge
+    rpc deleteData(ComData) returns (ComData) {}
+}
+
+
+message ComData{
+    optional string function = 1;
+    optional uint32 index = 2;
+    optional string city = 3;
+    optional bool succes = 4;
+    
+
+}
